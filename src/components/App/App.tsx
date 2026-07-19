@@ -7,7 +7,9 @@ import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import { fetchMovies } from "../../services/tmdbApi";
+import MovieModal from "../MovieModal/MovieModal";
+import { fetchMovies } from "../../services/movieService";
+import type { Movie } from "../../types/movie";
 import css from "./App.module.css";
 
 type ModuleWithDefault<T> = { default: T };
@@ -21,6 +23,7 @@ const ReactPaginate = (
 export default function App() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const { data, isPending, isError, error, isFetching } = useQuery({
     queryKey: ["movies", searchQuery, page],
@@ -35,6 +38,11 @@ export default function App() {
   const handleSearchSubmit = (query: string) => {
     setSearchQuery(query);
     setPage(1);
+    setSelectedMovie(null);
+  };
+
+  const handleCloseModal = (): void => {
+    setSelectedMovie(null);
   };
 
   return (
@@ -66,7 +74,9 @@ export default function App() {
           />
         )}
 
-        {!isError && movies.length > 0 && <MovieGrid movies={movies} />}
+        {!isError && movies.length > 0 && (
+          <MovieGrid movies={movies} onSelect={setSelectedMovie} />
+        )}
 
         {!isPending && !isError && searchQuery && movies.length === 0 && (
           <p className={css.hint}>No movies found for your query.</p>
@@ -76,6 +86,10 @@ export default function App() {
           <p className={css.hint}>Updating movies...</p>
         )}
       </main>
+
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+      )}
     </div>
   );
 }
