@@ -1,0 +1,15 @@
+@import "modern-normalize/modern-normalize.css";
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, #5ca0f3 0%, transparent 35%),
+    radial-gradient(circle at right 15%, #eec779 0%, transparent 30%), #f8fbff;
+  min-height: 100vh;
+  color: #18243d;
+}
+
+#root {
+  min-height: 100vh;
+}
